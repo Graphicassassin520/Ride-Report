@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Ride-Along Report App</title>
+  <style>
+    /* Basic CSS for layout and styling */
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    .hidden { display: none; }
+    fieldset { margin-bottom: 20px; padding: 10px; }
+    label { display: block; margin-top: 10px; }
+    input, select, textarea { width: 100%; padding: 5px; margin-top: 5px; }
+    .form-group { margin-bottom: 15px; }
+    .button { padding: 10px 20px; margin-top: 20px; cursor: pointer; }
+  </style>
+  <!-- Include jsPDF library from CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+  <!-- Login Section -->
+  <div id="loginDiv">
+    <h2>Login</h2>
+    <form id="loginForm">
+      <div class="form-group">
+        <label for="email">Email:</label>
+        <input type="email" id="email" required>
+      </div>
+      <div class="form-group">
+        <label for="password">Password:</label>
+        <input type="password" id="password" required>
+      </div>
+      <div class="form-group">
+        <label for="role">Role:</label>
+        <select id="role" required>
+          <option value="">Select Role</option>
+          <option value="SalesRep">Sales Rep</option>
+          <option value="SalesManager">Sales Manager</option>
+          <option value="Trainer">Trainer</option>
+        </select>
+      </div>
+      <button type="submit" class="button">Login</button>
+    </form>
+  </div>
+
+  <!-- Ride-Along Report App Section -->
+  <div id="appDiv" class="hidden">
+    <h2>Ride-Along Report Form</h2>
+    <form id="reportForm">
+      <!-- Section: Intent -->
+      <fieldset>
+        <legend>Intent</legend>
+        <label for="intent_understandable">Understandable?</label>
+        <select id="intent_understandable" name="Intent: Understandable?" required>
+          <option value="">Select</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+        
+        <label for="intent_clear">Clear (yes or no) Today?</label>
+        <select id="intent_clear" name="Intent: Clear (yes or no) Today?" required>
+          <option value="">Select</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+        
+        <label for="intent_1stDayBenefits">Mention of 1st Day Benefits?</label>
+        <select id="intent_1stDayBenefits" name="Intent: Mention of 1st Day Benefits?" required>
+          <option value="">Select</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+        
+        <label for="intent_getAgreement">Get Agreement?</label>
+        <select id="intent_getAgreement" name="Intent: Get Agreement?" required>
+          <option value="">Select</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+        
+        <label for="intent_effective">Effective?</label>
+        <select id="intent_effective" name="Intent: Effective?" required>
+          <option value="">Select</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+      </fieldset>
+
+      <!-- Section: Discovery -->
+      <fieldset>
+        <legend>Discovery</legend>
+        <label for="discovery_buildTrust">Did Rep build trust?</label>
+        <select id="discovery_buildTrust" name="Discovery: Did Rep build trust?" required>
+          <option value="">Select</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+
+        <label for="discovery_expansionQuestions">Ask expansion questions?</label>
+        <select id="discovery_expansionQuestions" name="Discovery: Ask expansion questions?" required>
+          <option value="">Select</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+
+        <label for="discovery_needsDetermined">Were needs determined?</label>
+        <select id="discovery_needsDetermined" name="Discovery: Were needs determined?" required>
+          <option value="">Select</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+
+        <label for="discovery_discoverProblem">Discover a problem?</label>
+        <select id="discovery_discoverProblem" name="Discovery: Discover a problem?" required>
+          <option value="">Select</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+
+        <label for="discovery_personalizeClose">Personalize close?</label>
+        <select id="discovery_personalizeClose" name="Discovery: Personalize close?" required>
+          <option value="">Select</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+
+        <label for="discovery_gainCommitment">Gain commitment?</label>
+        <select id="discovery_gainCommitment" name="Discovery: Gain commitment?" required>
+          <option value="">Select</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+
+        <label for="discovery_trialCloseEffective">Was a trial close effective?</label>
+        <select id="discovery_trialCloseEffective" name="Discovery: Was a trial close effective?" required>
+          <option value="">Select</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+      </fieldset>
+
+      <!-- Section: Commitment to Vacation -->
+      <fieldset>
+        <legend>Commitment to Vacation</legend>
+        <label for="vacation_importance">Why are Vacations important?</label>
+        <input type="text" id="vacation_importance" name="Commitment to Vacation: Why are Vacations important?" required>
+
+        <label for="vacation_dbmUncovered">Was the DBM uncovered?</label>
+        <select id="vacation_dbmUncovered" name="Commitment to Vacation: Was the DBM uncovered?" required>
+          <option value="">Select</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+
+        <label for="vacation_commitmentTravel">Was Commitment to Travel established?</label>
+        <select id="vacation_commitmentTravel" name="Commitment to Vacation: Was Commitment to Travel established?" required>
+          <option value="">Select</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+      </fieldset>
+
+      <!-- Section: Hotel Inflation -->
+      <fieldset>
+        <legend>Hotel Inflation</legend>
+        <label for="hotel_moneyAgreement">Money agreement over 30 vacations?</label>
+        <select id="hotel_moneyAgreement" name="Hotel Inflation: Money agreement over 30 vacations?" required>
+          <option value="">Select</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+
+        <label for="hotel_moneyCommitment">Money commitment with inflation?</label>
+        <select id="hotel_moneyCommitment" name="Hotel Inflation: Money commitment with inflation?" required>
+          <option value="">Select</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+
+        <label for="hotel_effectiveDelivery">Effective delivery/Get agreement?</label>
+        <select id="hotel_effectiveDelivery" name="Hotel Inflation: Effective delivery/Get agreement?" required>
+          <option value="">Select</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+      </fieldset>
+
+      <!-- Section: Rent VS. Own -->
+      <fieldset>
+        <legend>Rent VS. Own</legend>
+        <label for="rentAgreeSpend">Agreement to spend $ anyway?</label>
+        <select id="rentAgreeSpend" name="Rent VS. Own: Agreement to spend $ anyway?" required>
+          <option value="">Select</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+
+        <label for="rent_disadvantagesHotels">Did the Rep cover disadvantages of hotels?</label>
+        <select id="rent_disadvantagesHotels" name="Rent VS. Own: Did the Rep cover disadvantages of hotels?" required>
+          <option value="">Select</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+
+        <label for="rent_advantagesVillas">Did the Rep cover the advantages of villas?</label>
+        <select id="rent_advantagesVillas" name="Rent VS. Own: Did the Rep cover the advantages of villas?" required>
+          <option value="">Select</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+
+        <label for="rent_guestSpendNotOwn">Guest agreement on how much they would spend not to own?</label>
+        <input type="text" id="rent_guestSpendNotOwn" name="Rent VS. Own: Guest agreement on how much they would spend not to own?" required>
+
+        <label for="rent_guestInitialSpend">Did the guest initial the amount they would spend anyway?</label>
+        <select id="rent_guestInitialSpend" name="Rent VS. Own: Did the guest initial the amount they would spend anyway?" required>
+          <option value="">Select</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+
+        <label for="rent_effectiveDelivery">Effective delivery?</label>
+        <select id="rent_effectiveDelivery" name="Rent VS. Own: Effective delivery?" required>
+          <option value="">Select</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+
+        <label for="rent_trialClose">Rent VS. Own trial close?</label>
+        <select id="rent_trialClose" name="Rent VS. Own: Rent VS. Own trial close?" required>
+          <option value="">Select</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+
+        <label for="rent_gainCommitment">Gain Commitment?</label>
+        <select id="rent_gainCommitment" name="Rent VS. Own: Gain Commitment?" required>
+          <option value="">Select</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+      </fieldset>
+
+      <!-- Section: Ownership Advantages -->
+      <fieldset>
+        <legend>Ownership Advantages</legend>
+        <label for="ownership_coverAdvantages">Did Rep effectively cover advantages?</label>
+        <select id="ownership_coverAdvantages" name="Ownership Advantages: Did Rep effectively cover advantages?" required>
+          <option value="">Select</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+
+        <label for="ownership_explainDeeded">Did the Rep explain how it’s deeded?</label>
+        <select id="ownership_explainDeeded" name="Ownership Advantages: Did the Rep explain how it’s deeded?" required>
+          <option value="">Select</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+
+        <label for="ownership_encourageQuestions">Did the Rep encourage guests to speak/ask questions?</label>
+        <select id="ownership_encourageQuestions" name="Ownership Advantages: Did the Rep encourage guests to speak/ask questions?" required>
+          <option value="">Select</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+      </fieldset>
+
+      <!-- Section: Presentation Begins – Spinnaker Profile Booklet -->
+      <fieldset>
+        <legend>Presentation Begins – Spinnaker Profile Booklet</legend>
+        <label for="presentation_spinnakerIntroduced">Was Spinnaker Introduced?</label>
+        <select id="presentation_spinnakerIntroduced" name="Presentation: Was Spinnaker Introduced?" required>
+          <option value="">Select</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+
+        <label for="presentation_bransonOwnership">Was ownership in Branson discussed?</label>
+        <select id="presentation_bransonOwnership" name="Presentation: Was ownership in Branson discussed?" required>
+          <option value="">Select</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+
+        <label for="presentation_guestInPicture">Did the Rep put guest in the picture?</label>
+        <select id="presentation_guestInPicture" name="Presentation: Did the Rep put guest in the picture?" required>
+          <option value="">Select</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+
+        <label for="presentation_resortsUsed">Did the Rep find which resorts the guest would use?</label>
+        <select id="presentation_resortsUsed" name="Presentation: Did the Rep find which resorts the guest would use?" required>
+          <option value="">Select</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+
+        <label for="presentation_buildExcitement">Did the Rep build excitement?</label>
+        <select id="presentation_buildExcitement" name="Presentation: Did the Rep build excitement?" required>
+          <option value="">Select</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+
+        <label for="presentation_expandAmenities">Did the Rep expand on resort amenities?</label>
+        <select id="presentation_expandAmenities" name="Presentation: Did the Rep expand on resort amenities?" required>
+          <option value="">Select</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+      </fieldset>
+
+      <!-- Section: Spinnaker Advantages -->
+      <fieldset>
+        <legend>Spinnaker Advantages</legend>
+        <label for="spinnaker_threeReasons">Did the Rep cover 3 reasons why they would get involved today?</label>
+        <select id="spinnaker_threeReasons" name="Spinnaker Advantages: Did the Rep cover 3 reasons why they would get involved today?" required>
+          <option value="">Select</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+
+        <label for="spinnaker_threeImportant">Did the Rep write down the 3 most important things in their lives?</label>
+        <select id="spinnaker_threeImportant" name="Spinnaker Advantages: Did the Rep write down the 3 most important things in their lives?" required>
+          <option value="">Select</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+
+        <label for="spinnaker_trialClose">Did the Rep ask trial close, "Is there anything that would get in the way of you becoming our newest Spinnaker owners today?"</label>
+        <select id="spinnaker_trialClose" name="Spinnaker Advantages: Did the Rep ask trial close?" required>
+          <option value="">Select</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+      </fieldset>
+
+      <!-- Section: Property Tour -->
+      <fieldset>
+        <legend>Property Tour</legend>
+        <label for="property_involvement">Involvement from guest?</label>
+        <select id="property_involvement" name="Property Tour: Involvement from guest?" required>
+          <option value="">Select</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+
+        <label for="property_bonusTime">Put the guest in the picture for Bonus Time usage?</label>
+        <select id="property_bonusTime" name="Property Tour: Put the guest in the picture for Bonus Time usage?" required>
+          <option value="">Select</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+
+        <label for="property_personalize">Personalize features and benefits?</label>
+        <select id="property_personalize" name="Property Tour: Personalize features and benefits?" required>
+          <option value="">Select</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+      </fieldset>
+
+      <!-- Section: Maintenance Fees and Taxes -->
+      <fieldset>
+        <legend>Maintenance Fees and Taxes</legend>
+        <label for="maintenance_sellFees">Sell Fees?</label>
+        <select id="maintenance_sellFees" name="Maintenance Fees and Taxes: Sell Fees?" required>
+          <option value="">Select</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+
+        <label for="maintenance_referralProgram">Referral Program?</label>
+        <select id="maintenance_referralProgram" name="Maintenance Fees and Taxes: Referral Program?" required>
+          <option value="">Select</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+
+        <label for="maintenance_getAgreement">Get agreement/effective delivery?</label>
+        <select id="maintenance_getAgreement" name="Maintenance Fees and Taxes: Get agreement/effective delivery?" required>
+          <option value="">Select</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+      </fieldset>
+
+      <!-- Section: Model Close -->
+      <fieldset>
+        <legend>Model Close</legend>
+        <label for="model_otherThanMoney">Anything other than the money close on property?</label>
+        <select id="model_otherThanMoney" name="Model Close: Anything other than the money close on property?" required>
+          <option value="">Select</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+
+        <label for="model_getCommitment">Get commitment?</label>
+        <select id="model_getCommitment" name="Model Close: Get commitment?" required>
+          <option value="">Select</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+      </fieldset>
+
+      <!-- Section: Return to Preview Center (Header) -->
+      <fieldset>
+        <legend>Return to Preview Center</legend>
+        <!-- This is an informational header; add content if needed -->
+      </fieldset>
+
+      <!-- Section: Signature Fields -->
+      <fieldset>
+        <legend>Signatures & Comments</legend>
+        <label for="managerSignature">Managers/Trainers Signature:</label>
+        <input type="text" id="managerSignature" name="Managers/Trainers Signature" required>
+        
+        <label for="managerSignatureDate">Date (Managers/Trainers):</label>
+        <input type="date" id="managerSignatureDate" name="Managers/Trainers Date" required>
+        
+        <label for="repSignature">Representatives Signature:</label>
+        <input type="text" id="repSignature" name="Representatives Signature" required>
+        
+        <label for="repSignatureDate">Date (Representatives):</label>
+        <input type="date" id="repSignatureDate" name="Representatives Date" required>
+        
+        <label for="comments">Comments:</label>
+        <textarea id="comments" name="Comments" rows="4"></textarea>
+      </fieldset>
+
+      <button type="submit" class="button">Submit Report</button>
+    </form>
+  </div>
+
+  <script>
+    // Simulated login process
+    const loginForm = document.getElementById('loginForm');
+    loginForm.addEventListener('submit', function(event) {
+      event.preventDefault();
+      const email = document.getElementById('email').value;
+      const role = document.getElementById('role').value;
+      // (For demo purposes, any email/password works.)
+      sessionStorage.setItem('userEmail', email);
+      sessionStorage.setItem('userRole', role);
+      // Hide login and show the app
+      document.getElementById('loginDiv').classList.add('hidden');
+      document.getElementById('appDiv').classList.remove('hidden');
+    });
+
+    // Handle the Ride-Along Report form submission
+    const reportForm = document.getElementById('reportForm');
+    reportForm.addEventListener('submit', function(event) {
+      event.preventDefault();
+      // Gather all form values into an object
+      const formData = new FormData(reportForm);
+      let reportData = {};
+      formData.forEach((value, key) => {
+        reportData[key] = value;
+      });
+      
+      // Save report data to localStorage (for demo purposes)
+      let reports = JSON.parse(localStorage.getItem('reports')) || [];
+      reports.push(reportData);
+      localStorage.setItem('reports', JSON.stringify(reports));
+      
+      // Generate a PDF of the report
+      generatePDF(reportData);
+      
+      alert("Report submitted successfully!");
+      reportForm.reset();
+    });
+
+    // Function to generate a PDF report using jsPDF
+    async function generatePDF(reportData) {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      let yPos = 10;
+      doc.setFontSize(16);
+      doc.text("Ride-Along Report", 10, yPos);
+      yPos += 10;
+      doc.setFontSize(12);
+      // Loop through each field and add text to the PDF
+      for (const key in reportData) {
+        if (reportData.hasOwnProperty(key)) {
+          let text = key + ": " + reportData[key];
+          if (yPos > 280) {  // Add a new page if needed
+            doc.addPage();
+            yPos = 10;
+          }
+          doc.text(text, 10, yPos);
+          yPos += 7;
+        }
+      }
+      // Save the PDF file (alternatively, you could send it to a server for emailing)
+      doc.save("RideAlong_Report.pdf");
+    }
+  </script>
+</body>
+</html>
