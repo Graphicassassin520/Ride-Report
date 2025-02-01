@@ -2,476 +2,776 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Ride-Along Report App</title>
+  <!-- Ensure proper scaling on mobile devices -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Enhanced Ride-Along Report App</title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <!-- Custom Styles -->
   <style>
-    /* Basic CSS for layout and styling */
-    body { font-family: Arial, sans-serif; margin: 20px; }
     .hidden { display: none; }
-    fieldset { margin-bottom: 20px; padding: 10px; }
-    label { display: block; margin-top: 10px; }
-    input, select, textarea { width: 100%; padding: 5px; margin-top: 5px; }
-    .form-group { margin-bottom: 15px; }
-    .button { padding: 10px 20px; margin-top: 20px; cursor: pointer; }
+    .container-custom { max-width: 800px; }
   </style>
-  <!-- Include jsPDF library from CDN -->
+  <!-- jsPDF for PDF generation -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
-  <!-- Login Section -->
-  <div id="loginDiv">
-    <h2>Login</h2>
-    <form id="loginForm">
-      <div class="form-group">
-        <label for="email">Email:</label>
-        <input type="email" id="email" required>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="#">Ride-Along Report</a>
+    <div class="collapse navbar-collapse">
+      <ul class="navbar-nav ml-auto" id="navItems">
+        <!-- Nav items inserted via JavaScript after login -->
+      </ul>
+    </div>
+  </nav>
+
+  <!-- LOGIN SECTION -->
+  <div class="container container-custom my-4" id="loginDiv">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="mb-0">Login</h3>
       </div>
-      <div class="form-group">
-        <label for="password">Password:</label>
-        <input type="password" id="password" required>
+      <div class="card-body">
+        <form id="loginForm">
+          <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" class="form-control" required placeholder="Enter your email">
+          </div>
+          <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" id="password" class="form-control" required placeholder="Enter your password">
+          </div>
+          <div class="form-group">
+            <label for="role">Role:</label>
+            <select id="role" class="form-control" required>
+              <option value="">Select Role</option>
+              <option value="SalesRep">Sales Rep</option>
+              <option value="SalesManager">Sales Manager</option>
+              <option value="Trainer">Trainer</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">Login</button>
+        </form>
       </div>
-      <div class="form-group">
-        <label for="role">Role:</label>
-        <select id="role" required>
-          <option value="">Select Role</option>
-          <option value="SalesRep">Sales Rep</option>
-          <option value="SalesManager">Sales Manager</option>
-          <option value="Trainer">Trainer</option>
-        </select>
-      </div>
-      <button type="submit" class="button">Login</button>
-    </form>
+    </div>
   </div>
 
-  <!-- Ride-Along Report App Section -->
-  <div id="appDiv" class="hidden">
-    <h2>Ride-Along Report Form</h2>
-    <form id="reportForm">
-      <!-- Section: Intent -->
-      <fieldset>
-        <legend>Intent</legend>
-        <label for="intent_understandable">Understandable?</label>
-        <select id="intent_understandable" name="Intent: Understandable?" required>
-          <option value="">Select</option>
-          <option value="Yes">Yes</option>
-          <option value="No">No</option>
-        </select>
-        
-        <label for="intent_clear">Clear (yes or no) Today?</label>
-        <select id="intent_clear" name="Intent: Clear (yes or no) Today?" required>
-          <option value="">Select</option>
-          <option value="Yes">Yes</option>
-          <option value="No">No</option>
-        </select>
-        
-        <label for="intent_1stDayBenefits">Mention of 1st Day Benefits?</label>
-        <select id="intent_1stDayBenefits" name="Intent: Mention of 1st Day Benefits?" required>
-          <option value="">Select</option>
-          <option value="Yes">Yes</option>
-          <option value="No">No</option>
-        </select>
-        
-        <label for="intent_getAgreement">Get Agreement?</label>
-        <select id="intent_getAgreement" name="Intent: Get Agreement?" required>
-          <option value="">Select</option>
-          <option value="Yes">Yes</option>
-          <option value="No">No</option>
-        </select>
-        
-        <label for="intent_effective">Effective?</label>
-        <select id="intent_effective" name="Intent: Effective?" required>
-          <option value="">Select</option>
-          <option value="Yes">Yes</option>
-          <option value="No">No</option>
-        </select>
-      </fieldset>
-
-      <!-- Section: Discovery -->
-      <fieldset>
-        <legend>Discovery</legend>
-        <label for="discovery_buildTrust">Did Rep build trust?</label>
-        <select id="discovery_buildTrust" name="Discovery: Did Rep build trust?" required>
-          <option value="">Select</option>
-          <option value="Yes">Yes</option>
-          <option value="No">No</option>
-        </select>
-
-        <label for="discovery_expansionQuestions">Ask expansion questions?</label>
-        <select id="discovery_expansionQuestions" name="Discovery: Ask expansion questions?" required>
-          <option value="">Select</option>
-          <option value="Yes">Yes</option>
-          <option value="No">No</option>
-        </select>
-
-        <label for="discovery_needsDetermined">Were needs determined?</label>
-        <select id="discovery_needsDetermined" name="Discovery: Were needs determined?" required>
-          <option value="">Select</option>
-          <option value="Yes">Yes</option>
-          <option value="No">No</option>
-        </select>
-
-        <label for="discovery_discoverProblem">Discover a problem?</label>
-        <select id="discovery_discoverProblem" name="Discovery: Discover a problem?" required>
-          <option value="">Select</option>
-          <option value="Yes">Yes</option>
-          <option value="No">No</option>
-        </select>
-
-        <label for="discovery_personalizeClose">Personalize close?</label>
-        <select id="discovery_personalizeClose" name="Discovery: Personalize close?" required>
-          <option value="">Select</option>
-          <option value="Yes">Yes</option>
-          <option value="No">No</option>
-        </select>
-
-        <label for="discovery_gainCommitment">Gain commitment?</label>
-        <select id="discovery_gainCommitment" name="Discovery: Gain commitment?" required>
-          <option value="">Select</option>
-          <option value="Yes">Yes</option>
-          <option value="No">No</option>
-        </select>
-
-        <label for="discovery_trialCloseEffective">Was a trial close effective?</label>
-        <select id="discovery_trialCloseEffective" name="Discovery: Was a trial close effective?" required>
-          <option value="">Select</option>
-          <option value="Yes">Yes</option>
-          <option value="No">No</option>
-        </select>
-      </fieldset>
-
-      <!-- Section: Commitment to Vacation -->
-      <fieldset>
-        <legend>Commitment to Vacation</legend>
-        <label for="vacation_importance">Why are Vacations important?</label>
-        <input type="text" id="vacation_importance" name="Commitment to Vacation: Why are Vacations important?" required>
-
-        <label for="vacation_dbmUncovered">Was the DBM uncovered?</label>
-        <select id="vacation_dbmUncovered" name="Commitment to Vacation: Was the DBM uncovered?" required>
-          <option value="">Select</option>
-          <option value="Yes">Yes</option>
-          <option value="No">No</option>
-        </select>
-
-        <label for="vacation_commitmentTravel">Was Commitment to Travel established?</label>
-        <select id="vacation_commitmentTravel" name="Commitment to Vacation: Was Commitment to Travel established?" required>
-          <option value="">Select</option>
-          <option value="Yes">Yes</option>
-          <option value="No">No</option>
-        </select>
-      </fieldset>
-
-      <!-- Section: Hotel Inflation -->
-      <fieldset>
-        <legend>Hotel Inflation</legend>
-        <label for="hotel_moneyAgreement">Money agreement over 30 vacations?</label>
-        <select id="hotel_moneyAgreement" name="Hotel Inflation: Money agreement over 30 vacations?" required>
-          <option value="">Select</option>
-          <option value="Yes">Yes</option>
-          <option value="No">No</option>
-        </select>
-
-        <label for="hotel_moneyCommitment">Money commitment with inflation?</label>
-        <select id="hotel_moneyCommitment" name="Hotel Inflation: Money commitment with inflation?" required>
-          <option value="">Select</option>
-          <option value="Yes">Yes</option>
-          <option value="No">No</option>
-        </select>
-
-        <label for="hotel_effectiveDelivery">Effective delivery/Get agreement?</label>
-        <select id="hotel_effectiveDelivery" name="Hotel Inflation: Effective delivery/Get agreement?" required>
-          <option value="">Select</option>
-          <option value="Yes">Yes</option>
-          <option value="No">No</option>
-        </select>
-      </fieldset>
-
-      <!-- Section: Rent VS. Own -->
-      <fieldset>
-        <legend>Rent VS. Own</legend>
-        <label for="rentAgreeSpend">Agreement to spend $ anyway?</label>
-        <select id="rentAgreeSpend" name="Rent VS. Own: Agreement to spend $ anyway?" required>
-          <option value="">Select</option>
-          <option value="Yes">Yes</option>
-          <option value="No">No</option>
-        </select>
-
-        <label for="rent_disadvantagesHotels">Did the Rep cover disadvantages of hotels?</label>
-        <select id="rent_disadvantagesHotels" name="Rent VS. Own: Did the Rep cover disadvantages of hotels?" required>
-          <option value="">Select</option>
-          <option value="Yes">Yes</option>
-          <option value="No">No</option>
-        </select>
-
-        <label for="rent_advantagesVillas">Did the Rep cover the advantages of villas?</label>
-        <select id="rent_advantagesVillas" name="Rent VS. Own: Did the Rep cover the advantages of villas?" required>
-          <option value="">Select</option>
-          <option value="Yes">Yes</option>
-          <option value="No">No</option>
-        </select>
-
-        <label for="rent_guestSpendNotOwn">Guest agreement on how much they would spend not to own?</label>
-        <input type="text" id="rent_guestSpendNotOwn" name="Rent VS. Own: Guest agreement on how much they would spend not to own?" required>
-
-        <label for="rent_guestInitialSpend">Did the guest initial the amount they would spend anyway?</label>
-        <select id="rent_guestInitialSpend" name="Rent VS. Own: Did the guest initial the amount they would spend anyway?" required>
-          <option value="">Select</option>
-          <option value="Yes">Yes</option>
-          <option value="No">No</option>
-        </select>
-
-        <label for="rent_effectiveDelivery">Effective delivery?</label>
-        <select id="rent_effectiveDelivery" name="Rent VS. Own: Effective delivery?" required>
-          <option value="">Select</option>
-          <option value="Yes">Yes</option>
-          <option value="No">No</option>
-        </select>
-
-        <label for="rent_trialClose">Rent VS. Own trial close?</label>
-        <select id="rent_trialClose" name="Rent VS. Own: Rent VS. Own trial close?" required>
-          <option value="">Select</option>
-          <option value="Yes">Yes</option>
-          <option value="No">No</option>
-        </select>
-
-        <label for="rent_gainCommitment">Gain Commitment?</label>
-        <select id="rent_gainCommitment" name="Rent VS. Own: Gain Commitment?" required>
-          <option value="">Select</option>
-          <option value="Yes">Yes</option>
-          <option value="No">No</option>
-        </select>
-      </fieldset>
-
-      <!-- Section: Ownership Advantages -->
-      <fieldset>
-        <legend>Ownership Advantages</legend>
-        <label for="ownership_coverAdvantages">Did Rep effectively cover advantages?</label>
-        <select id="ownership_coverAdvantages" name="Ownership Advantages: Did Rep effectively cover advantages?" required>
-          <option value="">Select</option>
-          <option value="Yes">Yes</option>
-          <option value="No">No</option>
-        </select>
-
-        <label for="ownership_explainDeeded">Did the Rep explain how it’s deeded?</label>
-        <select id="ownership_explainDeeded" name="Ownership Advantages: Did the Rep explain how it’s deeded?" required>
-          <option value="">Select</option>
-          <option value="Yes">Yes</option>
-          <option value="No">No</option>
-        </select>
-
-        <label for="ownership_encourageQuestions">Did the Rep encourage guests to speak/ask questions?</label>
-        <select id="ownership_encourageQuestions" name="Ownership Advantages: Did the Rep encourage guests to speak/ask questions?" required>
-          <option value="">Select</option>
-          <option value="Yes">Yes</option>
-          <option value="No">No</option>
-        </select>
-      </fieldset>
-
-      <!-- Section: Presentation Begins – Spinnaker Profile Booklet -->
-      <fieldset>
-        <legend>Presentation Begins – Spinnaker Profile Booklet</legend>
-        <label for="presentation_spinnakerIntroduced">Was Spinnaker Introduced?</label>
-        <select id="presentation_spinnakerIntroduced" name="Presentation: Was Spinnaker Introduced?" required>
-          <option value="">Select</option>
-          <option value="Yes">Yes</option>
-          <option value="No">No</option>
-        </select>
-
-        <label for="presentation_bransonOwnership">Was ownership in Branson discussed?</label>
-        <select id="presentation_bransonOwnership" name="Presentation: Was ownership in Branson discussed?" required>
-          <option value="">Select</option>
-          <option value="Yes">Yes</option>
-          <option value="No">No</option>
-        </select>
-
-        <label for="presentation_guestInPicture">Did the Rep put guest in the picture?</label>
-        <select id="presentation_guestInPicture" name="Presentation: Did the Rep put guest in the picture?" required>
-          <option value="">Select</option>
-          <option value="Yes">Yes</option>
-          <option value="No">No</option>
-        </select>
-
-        <label for="presentation_resortsUsed">Did the Rep find which resorts the guest would use?</label>
-        <select id="presentation_resortsUsed" name="Presentation: Did the Rep find which resorts the guest would use?" required>
-          <option value="">Select</option>
-          <option value="Yes">Yes</option>
-          <option value="No">No</option>
-        </select>
-
-        <label for="presentation_buildExcitement">Did the Rep build excitement?</label>
-        <select id="presentation_buildExcitement" name="Presentation: Did the Rep build excitement?" required>
-          <option value="">Select</option>
-          <option value="Yes">Yes</option>
-          <option value="No">No</option>
-        </select>
-
-        <label for="presentation_expandAmenities">Did the Rep expand on resort amenities?</label>
-        <select id="presentation_expandAmenities" name="Presentation: Did the Rep expand on resort amenities?" required>
-          <option value="">Select</option>
-          <option value="Yes">Yes</option>
-          <option value="No">No</option>
-        </select>
-      </fieldset>
-
-      <!-- Section: Spinnaker Advantages -->
-      <fieldset>
-        <legend>Spinnaker Advantages</legend>
-        <label for="spinnaker_threeReasons">Did the Rep cover 3 reasons why they would get involved today?</label>
-        <select id="spinnaker_threeReasons" name="Spinnaker Advantages: Did the Rep cover 3 reasons why they would get involved today?" required>
-          <option value="">Select</option>
-          <option value="Yes">Yes</option>
-          <option value="No">No</option>
-        </select>
-
-        <label for="spinnaker_threeImportant">Did the Rep write down the 3 most important things in their lives?</label>
-        <select id="spinnaker_threeImportant" name="Spinnaker Advantages: Did the Rep write down the 3 most important things in their lives?" required>
-          <option value="">Select</option>
-          <option value="Yes">Yes</option>
-          <option value="No">No</option>
-        </select>
-
-        <label for="spinnaker_trialClose">Did the Rep ask trial close, "Is there anything that would get in the way of you becoming our newest Spinnaker owners today?"</label>
-        <select id="spinnaker_trialClose" name="Spinnaker Advantages: Did the Rep ask trial close?" required>
-          <option value="">Select</option>
-          <option value="Yes">Yes</option>
-          <option value="No">No</option>
-        </select>
-      </fieldset>
-
-      <!-- Section: Property Tour -->
-      <fieldset>
-        <legend>Property Tour</legend>
-        <label for="property_involvement">Involvement from guest?</label>
-        <select id="property_involvement" name="Property Tour: Involvement from guest?" required>
-          <option value="">Select</option>
-          <option value="Yes">Yes</option>
-          <option value="No">No</option>
-        </select>
-
-        <label for="property_bonusTime">Put the guest in the picture for Bonus Time usage?</label>
-        <select id="property_bonusTime" name="Property Tour: Put the guest in the picture for Bonus Time usage?" required>
-          <option value="">Select</option>
-          <option value="Yes">Yes</option>
-          <option value="No">No</option>
-        </select>
-
-        <label for="property_personalize">Personalize features and benefits?</label>
-        <select id="property_personalize" name="Property Tour: Personalize features and benefits?" required>
-          <option value="">Select</option>
-          <option value="Yes">Yes</option>
-          <option value="No">No</option>
-        </select>
-      </fieldset>
-
-      <!-- Section: Maintenance Fees and Taxes -->
-      <fieldset>
-        <legend>Maintenance Fees and Taxes</legend>
-        <label for="maintenance_sellFees">Sell Fees?</label>
-        <select id="maintenance_sellFees" name="Maintenance Fees and Taxes: Sell Fees?" required>
-          <option value="">Select</option>
-          <option value="Yes">Yes</option>
-          <option value="No">No</option>
-        </select>
-
-        <label for="maintenance_referralProgram">Referral Program?</label>
-        <select id="maintenance_referralProgram" name="Maintenance Fees and Taxes: Referral Program?" required>
-          <option value="">Select</option>
-          <option value="Yes">Yes</option>
-          <option value="No">No</option>
-        </select>
-
-        <label for="maintenance_getAgreement">Get agreement/effective delivery?</label>
-        <select id="maintenance_getAgreement" name="Maintenance Fees and Taxes: Get agreement/effective delivery?" required>
-          <option value="">Select</option>
-          <option value="Yes">Yes</option>
-          <option value="No">No</option>
-        </select>
-      </fieldset>
-
-      <!-- Section: Model Close -->
-      <fieldset>
-        <legend>Model Close</legend>
-        <label for="model_otherThanMoney">Anything other than the money close on property?</label>
-        <select id="model_otherThanMoney" name="Model Close: Anything other than the money close on property?" required>
-          <option value="">Select</option>
-          <option value="Yes">Yes</option>
-          <option value="No">No</option>
-        </select>
-
-        <label for="model_getCommitment">Get commitment?</label>
-        <select id="model_getCommitment" name="Model Close: Get commitment?" required>
-          <option value="">Select</option>
-          <option value="Yes">Yes</option>
-          <option value="No">No</option>
-        </select>
-      </fieldset>
-
-      <!-- Section: Return to Preview Center (Header) -->
-      <fieldset>
-        <legend>Return to Preview Center</legend>
-        <!-- This is an informational header; add content if needed -->
-      </fieldset>
-
-      <!-- Section: Signature Fields -->
-      <fieldset>
-        <legend>Signatures & Comments</legend>
-        <label for="managerSignature">Managers/Trainers Signature:</label>
-        <input type="text" id="managerSignature" name="Managers/Trainers Signature" required>
-        
-        <label for="managerSignatureDate">Date (Managers/Trainers):</label>
-        <input type="date" id="managerSignatureDate" name="Managers/Trainers Date" required>
-        
-        <label for="repSignature">Representatives Signature:</label>
-        <input type="text" id="repSignature" name="Representatives Signature" required>
-        
-        <label for="repSignatureDate">Date (Representatives):</label>
-        <input type="date" id="repSignatureDate" name="Representatives Date" required>
-        
-        <label for="comments">Comments:</label>
-        <textarea id="comments" name="Comments" rows="4"></textarea>
-      </fieldset>
-
-      <button type="submit" class="button">Submit Report</button>
-    </form>
+  <!-- MAIN APP SECTION (Report Form) -->
+  <div class="container container-custom my-4 hidden" id="appDiv">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h3>Ride-Along Report Form</h3>
+      <div>
+        <button id="dashboardBtn" class="btn btn-info btn-sm hidden">Dashboard</button>
+        <button id="logoutBtn" class="btn btn-danger btn-sm">Logout</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-body">
+        <form id="reportForm">
+          <!-- Hidden field to store report ID for editing -->
+          <input type="hidden" id="reportId" value="">
+          <!-- Intent Section -->
+          <div class="mb-3">
+            <h5>Intent</h5>
+            <div class="form-row">
+              <div class="form-group col-md-4">
+                <label for="intent_understandable">Understandable?</label>
+                <select id="intent_understandable" name="Intent: Understandable?" class="form-control" required>
+                  <option value="">Select</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </select>
+              </div>
+              <div class="form-group col-md-4">
+                <label for="intent_clear">Clear (yes or no) Today?</label>
+                <select id="intent_clear" name="Intent: Clear (yes or no) Today?" class="form-control" required>
+                  <option value="">Select</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </select>
+              </div>
+              <div class="form-group col-md-4">
+                <label for="intent_1stDayBenefits">Mention of 1st Day Benefits?</label>
+                <select id="intent_1stDayBenefits" name="Intent: Mention of 1st Day Benefits?" class="form-control" required>
+                  <option value="">Select</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="intent_getAgreement">Get Agreement?</label>
+                <select id="intent_getAgreement" name="Intent: Get Agreement?" class="form-control" required>
+                  <option value="">Select</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </select>
+              </div>
+              <div class="form-group col-md-6">
+                <label for="intent_effective">Effective?</label>
+                <select id="intent_effective" name="Intent: Effective?" class="form-control" required>
+                  <option value="">Select</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <!-- Discovery Section -->
+          <div class="mb-3">
+            <h5>Discovery</h5>
+            <div class="form-row">
+              <div class="form-group col-md-4">
+                <label for="discovery_buildTrust">Did Rep build trust?</label>
+                <select id="discovery_buildTrust" name="Discovery: Did Rep build trust?" class="form-control" required>
+                  <option value="">Select</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </select>
+              </div>
+              <div class="form-group col-md-4">
+                <label for="discovery_expansionQuestions">Ask expansion questions?</label>
+                <select id="discovery_expansionQuestions" name="Discovery: Ask expansion questions?" class="form-control" required>
+                  <option value="">Select</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </select>
+              </div>
+              <div class="form-group col-md-4">
+                <label for="discovery_needsDetermined">Were needs determined?</label>
+                <select id="discovery_needsDetermined" name="Discovery: Were needs determined?" class="form-control" required>
+                  <option value="">Select</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group col-md-4">
+                <label for="discovery_discoverProblem">Discover a problem?</label>
+                <select id="discovery_discoverProblem" name="Discovery: Discover a problem?" class="form-control" required>
+                  <option value="">Select</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </select>
+              </div>
+              <div class="form-group col-md-4">
+                <label for="discovery_personalizeClose">Personalize close?</label>
+                <select id="discovery_personalizeClose" name="Discovery: Personalize close?" class="form-control" required>
+                  <option value="">Select</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </select>
+              </div>
+              <div class="form-group col-md-4">
+                <label for="discovery_gainCommitment">Gain commitment?</label>
+                <select id="discovery_gainCommitment" name="Discovery: Gain commitment?" class="form-control" required>
+                  <option value="">Select</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="discovery_trialCloseEffective">Was a trial close effective?</label>
+              <select id="discovery_trialCloseEffective" name="Discovery: Was a trial close effective?" class="form-control" required>
+                <option value="">Select</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+            </div>
+          </div>
+          <!-- Commitment to Vacation Section -->
+          <div class="mb-3">
+            <h5>Commitment to Vacation</h5>
+            <div class="form-group">
+              <label for="vacation_importance">Why are Vacations important?</label>
+              <input type="text" id="vacation_importance" name="Commitment to Vacation: Why are Vacations important?" class="form-control" required>
+            </div>
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="vacation_dbmUncovered">Was the DBM uncovered?</label>
+                <select id="vacation_dbmUncovered" name="Commitment to Vacation: Was the DBM uncovered?" class="form-control" required>
+                  <option value="">Select</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </select>
+              </div>
+              <div class="form-group col-md-6">
+                <label for="vacation_commitmentTravel">Was Commitment to Travel established?</label>
+                <select id="vacation_commitmentTravel" name="Commitment to Vacation: Was Commitment to Travel established?" class="form-control" required>
+                  <option value="">Select</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <!-- Hotel Inflation Section -->
+          <div class="mb-3">
+            <h5>Hotel Inflation</h5>
+            <div class="form-row">
+              <div class="form-group col-md-4">
+                <label for="hotel_moneyAgreement">Money agreement over 30 vacations?</label>
+                <select id="hotel_moneyAgreement" name="Hotel Inflation: Money agreement over 30 vacations?" class="form-control" required>
+                  <option value="">Select</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </select>
+              </div>
+              <div class="form-group col-md-4">
+                <label for="hotel_moneyCommitment">Money commitment with inflation?</label>
+                <select id="hotel_moneyCommitment" name="Hotel Inflation: Money commitment with inflation?" class="form-control" required>
+                  <option value="">Select</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </select>
+              </div>
+              <div class="form-group col-md-4">
+                <label for="hotel_effectiveDelivery">Effective delivery/Get agreement?</label>
+                <select id="hotel_effectiveDelivery" name="Hotel Inflation: Effective delivery/Get agreement?" class="form-control" required>
+                  <option value="">Select</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <!-- Rent VS. Own Section -->
+          <div class="mb-3">
+            <h5>Rent VS. Own</h5>
+            <div class="form-row">
+              <div class="form-group col-md-4">
+                <label for="rentAgreeSpend">Agreement to spend $ anyway?</label>
+                <select id="rentAgreeSpend" name="Rent VS. Own: Agreement to spend $ anyway?" class="form-control" required>
+                  <option value="">Select</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </select>
+              </div>
+              <div class="form-group col-md-4">
+                <label for="rent_disadvantagesHotels">Did the Rep cover disadvantages of hotels?</label>
+                <select id="rent_disadvantagesHotels" name="Rent VS. Own: Did the Rep cover disadvantages of hotels?" class="form-control" required>
+                  <option value="">Select</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </select>
+              </div>
+              <div class="form-group col-md-4">
+                <label for="rent_advantagesVillas">Did the Rep cover the advantages of villas?</label>
+                <select id="rent_advantagesVillas" name="Rent VS. Own: Did the Rep cover the advantages of villas?" class="form-control" required>
+                  <option value="">Select</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="rent_guestSpendNotOwn">Guest agreement on how much they would spend not to own?</label>
+              <input type="text" id="rent_guestSpendNotOwn" name="Rent VS. Own: Guest agreement on how much they would spend not to own?" class="form-control" required>
+            </div>
+            <div class="form-row">
+              <div class="form-group col-md-4">
+                <label for="rent_guestInitialSpend">Did the guest initial the amount they would spend anyway?</label>
+                <select id="rent_guestInitialSpend" name="Rent VS. Own: Did the guest initial the amount they would spend anyway?" class="form-control" required>
+                  <option value="">Select</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </select>
+              </div>
+              <div class="form-group col-md-4">
+                <label for="rent_effectiveDelivery">Effective delivery?</label>
+                <select id="rent_effectiveDelivery" name="Rent VS. Own: Effective delivery?" class="form-control" required>
+                  <option value="">Select</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </select>
+              </div>
+              <div class="form-group col-md-4">
+                <label for="rent_trialClose">Rent VS. Own trial close?</label>
+                <select id="rent_trialClose" name="Rent VS. Own: Rent VS. Own trial close?" class="form-control" required>
+                  <option value="">Select</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="rent_gainCommitment">Gain Commitment?</label>
+              <select id="rent_gainCommitment" name="Rent VS. Own: Gain Commitment?" class="form-control" required>
+                <option value="">Select</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+            </div>
+          </div>
+          <!-- Ownership Advantages Section -->
+          <div class="mb-3">
+            <h5>Ownership Advantages</h5>
+            <div class="form-row">
+              <div class="form-group col-md-4">
+                <label for="ownership_coverAdvantages">Did Rep effectively cover advantages?</label>
+                <select id="ownership_coverAdvantages" name="Ownership Advantages: Did Rep effectively cover advantages?" class="form-control" required>
+                  <option value="">Select</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </select>
+              </div>
+              <div class="form-group col-md-4">
+                <label for="ownership_explainDeeded">Did the Rep explain how it’s deeded?</label>
+                <select id="ownership_explainDeeded" name="Ownership Advantages: Did the Rep explain how it’s deeded?" class="form-control" required>
+                  <option value="">Select</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </select>
+              </div>
+              <div class="form-group col-md-4">
+                <label for="ownership_encourageQuestions">Did the Rep encourage guests to speak/ask questions?</label>
+                <select id="ownership_encourageQuestions" name="Ownership Advantages: Did the Rep encourage guests to speak/ask questions?" class="form-control" required>
+                  <option value="">Select</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <!-- Presentation Begins Section -->
+          <div class="mb-3">
+            <h5>Presentation Begins – Spinnaker Profile Booklet</h5>
+            <div class="form-row">
+              <div class="form-group col-md-4">
+                <label for="presentation_spinnakerIntroduced">Was Spinnaker Introduced?</label>
+                <select id="presentation_spinnakerIntroduced" name="Presentation: Was Spinnaker Introduced?" class="form-control" required>
+                  <option value="">Select</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </select>
+              </div>
+              <div class="form-group col-md-4">
+                <label for="presentation_bransonOwnership">Was ownership in Branson discussed?</label>
+                <select id="presentation_bransonOwnership" name="Presentation: Was ownership in Branson discussed?" class="form-control" required>
+                  <option value="">Select</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </select>
+              </div>
+              <div class="form-group col-md-4">
+                <label for="presentation_guestInPicture">Did the Rep put guest in the picture?</label>
+                <select id="presentation_guestInPicture" name="Presentation: Did the Rep put guest in the picture?" class="form-control" required>
+                  <option value="">Select</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="presentation_resortsUsed">Did the Rep find which resorts the guest would use?</label>
+                <select id="presentation_resortsUsed" name="Presentation: Did the Rep find which resorts the guest would use?" class="form-control" required>
+                  <option value="">Select</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </select>
+              </div>
+              <div class="form-group col-md-6">
+                <label for="presentation_buildExcitement">Did the Rep build excitement?</label>
+                <select id="presentation_buildExcitement" name="Presentation: Did the Rep build excitement?" class="form-control" required>
+                  <option value="">Select</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="presentation_expandAmenities">Did the Rep expand on resort amenities?</label>
+              <select id="presentation_expandAmenities" name="Presentation: Did the Rep expand on resort amenities?" class="form-control" required>
+                <option value="">Select</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+            </div>
+          </div>
+          <!-- Spinnaker Advantages Section -->
+          <div class="mb-3">
+            <h5>Spinnaker Advantages</h5>
+            <div class="form-row">
+              <div class="form-group col-md-4">
+                <label for="spinnaker_threeReasons">Did the Rep cover 3 reasons why they would get involved today?</label>
+                <select id="spinnaker_threeReasons" name="Spinnaker Advantages: Did the Rep cover 3 reasons why they would get involved today?" class="form-control" required>
+                  <option value="">Select</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </select>
+              </div>
+              <div class="form-group col-md-4">
+                <label for="spinnaker_threeImportant">Did the Rep write down the 3 most important things in their lives?</label>
+                <select id="spinnaker_threeImportant" name="Spinnaker Advantages: Did the Rep write down the 3 most important things in their lives?" class="form-control" required>
+                  <option value="">Select</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </select>
+              </div>
+              <div class="form-group col-md-4">
+                <label for="spinnaker_trialClose">Did the Rep ask trial close, "Is there anything that would get in the way of you becoming our newest Spinnaker owners today?"</label>
+                <select id="spinnaker_trialClose" name="Spinnaker Advantages: Did the Rep ask trial close?" class="form-control" required>
+                  <option value="">Select</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <!-- Property Tour Section -->
+          <div class="mb-3">
+            <h5>Property Tour</h5>
+            <div class="form-row">
+              <div class="form-group col-md-4">
+                <label for="property_involvement">Involvement from guest?</label>
+                <select id="property_involvement" name="Property Tour: Involvement from guest?" class="form-control" required>
+                  <option value="">Select</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </select>
+              </div>
+              <div class="form-group col-md-4">
+                <label for="property_bonusTime">Put the guest in the picture for Bonus Time usage?</label>
+                <select id="property_bonusTime" name="Property Tour: Put the guest in the picture for Bonus Time usage?" class="form-control" required>
+                  <option value="">Select</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </select>
+              </div>
+              <div class="form-group col-md-4">
+                <label for="property_personalize">Personalize features and benefits?</label>
+                <select id="property_personalize" name="Property Tour: Personalize features and benefits?" class="form-control" required>
+                  <option value="">Select</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <!-- Maintenance Fees and Taxes Section -->
+          <div class="mb-3">
+            <h5>Maintenance Fees and Taxes</h5>
+            <div class="form-row">
+              <div class="form-group col-md-4">
+                <label for="maintenance_sellFees">Sell Fees?</label>
+                <select id="maintenance_sellFees" name="Maintenance Fees and Taxes: Sell Fees?" class="form-control" required>
+                  <option value="">Select</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </select>
+              </div>
+              <div class="form-group col-md-4">
+                <label for="maintenance_referralProgram">Referral Program?</label>
+                <select id="maintenance_referralProgram" name="Maintenance Fees and Taxes: Referral Program?" class="form-control" required>
+                  <option value="">Select</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </select>
+              </div>
+              <div class="form-group col-md-4">
+                <label for="maintenance_getAgreement">Get agreement/effective delivery?</label>
+                <select id="maintenance_getAgreement" name="Maintenance Fees and Taxes: Get agreement/effective delivery?" class="form-control" required>
+                  <option value="">Select</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <!-- Model Close Section -->
+          <div class="mb-3">
+            <h5>Model Close</h5>
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="model_otherThanMoney">Anything other than the money close on property?</label>
+                <select id="model_otherThanMoney" name="Model Close: Anything other than the money close on property?" class="form-control" required>
+                  <option value="">Select</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </select>
+              </div>
+              <div class="form-group col-md-6">
+                <label for="model_getCommitment">Get commitment?</label>
+                <select id="model_getCommitment" name="Model Close: Get commitment?" class="form-control" required>
+                  <option value="">Select</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <!-- Return to Preview Center (Informational) -->
+          <div class="mb-3">
+            <h5>Return to Preview Center</h5>
+            <p>This section is informational.</p>
+          </div>
+          <!-- Signatures & Comments Section -->
+          <div class="mb-3">
+            <h5>Signatures & Comments</h5>
+            <div class="form-group">
+              <label for="managerSignature">Managers/Trainers Signature:</label>
+              <input type="text" id="managerSignature" name="Managers/Trainers Signature" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label for="managerSignatureDate">Date (Managers/Trainers):</label>
+              <input type="date" id="managerSignatureDate" name="Managers/Trainers Date" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label for="repSignature">Representatives Signature:</label>
+              <input type="text" id="repSignature" name="Representatives Signature" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label for="repSignatureDate">Date (Representatives):</label>
+              <input type="date" id="repSignatureDate" name="Representatives Date" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label for="comments">Comments:</label>
+              <textarea id="comments" name="Comments" class="form-control" rows="3"></textarea>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-success btn-block" id="submitReportBtn">Submit Report</button>
+        </form>
+      </div>
+    </div>
   </div>
+
+  <!-- DASHBOARD SECTION (For Managers/Trainers) -->
+  <div class="container container-custom my-4 hidden" id="dashboardDiv">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h3>Reports Dashboard</h3>
+      <div>
+        <button id="backToFormBtn" class="btn btn-secondary btn-sm">Back to Form</button>
+        <button id="exportCSVBtn" class="btn btn-success btn-sm">Export CSV</button>
+      </div>
+    </div>
+    <div class="card mb-3">
+      <div class="card-body">
+        <form id="filterForm" class="form-inline">
+          <div class="form-group mb-2 mr-2">
+            <label for="filterEmail" class="mr-2">Rep Email:</label>
+            <input type="text" id="filterEmail" class="form-control" placeholder="Type rep email">
+          </div>
+          <div class="form-group mb-2 mr-2">
+            <label for="filterDate" class="mr-2">Date:</label>
+            <input type="date" id="filterDate" class="form-control">
+          </div>
+          <button type="button" id="applyFiltersBtn" class="btn btn-primary mb-2 mr-2">Apply Filters</button>
+          <button type="button" id="clearFiltersBtn" class="btn btn-outline-secondary mb-2">Clear Filters</button>
+        </form>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-body">
+        <table class="table table-bordered table-striped" id="reportsTable">
+          <thead class="thead-dark">
+            <tr>
+              <th>ID</th>
+              <th>Submitted By</th>
+              <th>Date</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Report rows inserted dynamically -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- DELETE CONFIRMATION MODAL -->
+  <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header bg-danger text-white">
+          <h5 class="modal-title" id="confirmDeleteLabel">Confirm Deletion</h5>
+          <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          Are you sure you want to delete this report?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+          <button type="button" id="deleteConfirmBtn" class="btn btn-danger">Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div aria-live="polite" aria-atomic="true" style="position: fixed; top: 20px; right: 20px; min-width: 250px;">
+    <div id="toastNotification" class="toast" data-delay="3000">
+      <div class="toast-header">
+        <strong class="mr-auto" id="toastTitle">Notification</strong>
+        <small>Now</small>
+        <button type="button" class="ml-2 mb-1 close" data-dismiss="toast">
+          <span>&times;</span>
+        </button>
+      </div>
+      <div class="toast-body" id="toastBody">
+      </div>
+    </div>
+  </div>
+
+  <!-- jQuery, Popper, and Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
   <script>
-    // Simulated login process
-    const loginForm = document.getElementById('loginForm');
-    loginForm.addEventListener('submit', function(event) {
+    // Global variables
+    let autoSaveInterval;
+    let editingReport = false;
+    let reportToDelete = null;
+    const REPORTS_KEY = 'reports';
+
+    // Utility functions for reports
+    function getReports() {
+      return JSON.parse(localStorage.getItem(REPORTS_KEY)) || [];
+    }
+    function saveReports(reports) {
+      localStorage.setItem(REPORTS_KEY, JSON.stringify(reports));
+    }
+    function generateReportId() {
+      return 'RPT-' + new Date().getTime();
+    }
+
+    // Show/hide containers
+    function showContainer(id) {
+      ['loginDiv', 'appDiv', 'dashboardDiv'].forEach(divId => {
+        document.getElementById(divId).classList.add('hidden');
+      });
+      document.getElementById(id).classList.remove('hidden');
+    }
+
+    // Toast notifications
+    function showToast(title, message) {
+      document.getElementById('toastTitle').innerText = title;
+      document.getElementById('toastBody').innerText = message;
+      $('#toastNotification').toast('show');
+    }
+
+    // Update Navbar
+    function updateNavbar() {
+      const role = sessionStorage.getItem('userRole');
+      let navHTML = '';
+      if (role) {
+        navHTML += `<li class="nav-item"><span class="nav-link">Logged in as: ${sessionStorage.getItem('userEmail')} (${role})</span></li>`;
+        navHTML += `<li class="nav-item"><button id="navbarLogoutBtn" class="btn btn-sm btn-danger">Logout</button></li>`;
+      }
+      document.getElementById('navItems').innerHTML = navHTML;
+      if(document.getElementById('navbarLogoutBtn')) {
+        document.getElementById('navbarLogoutBtn').addEventListener('click', () => {
+          sessionStorage.clear();
+          clearInterval(autoSaveInterval);
+          showContainer('loginDiv');
+        });
+      }
+    }
+
+    // LOGIN PROCESS
+    document.getElementById('loginForm').addEventListener('submit', function(event) {
       event.preventDefault();
       const email = document.getElementById('email').value;
       const role = document.getElementById('role').value;
-      // (For demo purposes, any email/password works.)
       sessionStorage.setItem('userEmail', email);
       sessionStorage.setItem('userRole', role);
-      // Hide login and show the app
-      document.getElementById('loginDiv').classList.add('hidden');
-      document.getElementById('appDiv').classList.remove('hidden');
+      updateNavbar();
+      if (role === 'SalesManager' || role === 'Trainer') {
+        document.getElementById('dashboardBtn').classList.remove('hidden');
+      } else {
+        document.getElementById('dashboardBtn').classList.add('hidden');
+      }
+      showContainer('appDiv');
+      startAutoSave();
+      showToast('Login Successful', 'Welcome to the Ride-Along Report App!');
     });
 
-    // Handle the Ride-Along Report form submission
-    const reportForm = document.getElementById('reportForm');
-    reportForm.addEventListener('submit', function(event) {
+    // LOGOUT PROCESS
+    document.getElementById('logoutBtn').addEventListener('click', function() {
+      sessionStorage.clear();
+      clearInterval(autoSaveInterval);
+      showContainer('loginDiv');
+      showToast('Logout', 'You have been logged out.');
+    });
+
+    // Dashboard button
+    document.getElementById('dashboardBtn').addEventListener('click', function() {
+      clearInterval(autoSaveInterval);
+      populateDashboard();
+      showContainer('dashboardDiv');
+    });
+
+    // Back to form from dashboard
+    document.getElementById('backToFormBtn').addEventListener('click', function() {
+      showContainer('appDiv');
+      startAutoSave();
+    });
+
+    // Auto-save functionality (every 5 seconds)
+    function startAutoSave() {
+      autoSaveInterval = setInterval(() => {
+        const formData = new FormData(document.getElementById('reportForm'));
+        const draft = {};
+        formData.forEach((value, key) => { draft[key] = value; });
+        localStorage.setItem('draftReport', JSON.stringify(draft));
+      }, 5000);
+    }
+
+    // Restore draft on page load
+    window.addEventListener('load', () => {
+      const draft = localStorage.getItem('draftReport');
+      if (draft) {
+        const draftData = JSON.parse(draft);
+        for (const key in draftData) {
+          if (draftData.hasOwnProperty(key)) {
+            const el = document.querySelector(`[name="${key}"]`);
+            if (el) { el.value = draftData[key]; }
+          }
+        }
+      }
+    });
+
+    // Report form submission (new or edit)
+    document.getElementById('reportForm').addEventListener('submit', function(event) {
       event.preventDefault();
-      // Gather all form values into an object
-      const formData = new FormData(reportForm);
+      const form = event.target;
+      const formData = new FormData(form);
       let reportData = {};
-      formData.forEach((value, key) => {
-        reportData[key] = value;
-      });
+      formData.forEach((value, key) => { reportData[key] = value; });
+      const currentUser = sessionStorage.getItem('userEmail');
+      reportData.submittedBy = currentUser;
+      reportData.submissionDate = new Date().toISOString();
+      // Default status is "Pending Review"
+      reportData.status = "Pending Review";
       
-      // Save report data to localStorage (for demo purposes)
-      let reports = JSON.parse(localStorage.getItem('reports')) || [];
-      reports.push(reportData);
-      localStorage.setItem('reports', JSON.stringify(reports));
-      
-      // Generate a PDF of the report
+      let reports = getReports();
+      if (editingReport) {
+        const id = document.getElementById('reportId').value;
+        reportData.id = id;
+        reports = reports.map(rep => rep.id === id ? reportData : rep);
+        editingReport = false;
+      } else {
+        reportData.id = generateReportId();
+        reports.push(reportData);
+      }
+      saveReports(reports);
+      localStorage.removeItem('draftReport');
       generatePDF(reportData);
-      
-      alert("Report submitted successfully!");
-      reportForm.reset();
+      showToast('Report Submitted', 'Your report has been submitted successfully!');
+      form.reset();
+      document.getElementById('reportId').value = '';
     });
 
-    // Function to generate a PDF report using jsPDF
+    // Enhanced PDF generation using jsPDF
     async function generatePDF(reportData) {
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF();
@@ -480,11 +780,11 @@
       doc.text("Ride-Along Report", 10, yPos);
       yPos += 10;
       doc.setFontSize(12);
-      // Loop through each field and add text to the PDF
       for (const key in reportData) {
-        if (reportData.hasOwnProperty(key)) {
+        if (reportData.hasOwnProperty(key) &&
+            !['id', 'submittedBy', 'submissionDate', 'status'].includes(key)) {
           let text = key + ": " + reportData[key];
-          if (yPos > 280) {  // Add a new page if needed
+          if (yPos > 280) {
             doc.addPage();
             yPos = 10;
           }
@@ -492,9 +792,147 @@
           yPos += 7;
         }
       }
-      // Save the PDF file (alternatively, you could send it to a server for emailing)
-      doc.save("RideAlong_Report.pdf");
+      doc.setFontSize(10);
+      doc.text("Report ID: " + reportData.id, 10, yPos + 5);
+      doc.text("Submitted by: " + reportData.submittedBy, 10, yPos + 12);
+      doc.text("Submission Date: " + new Date(reportData.submissionDate).toLocaleString(), 10, yPos + 19);
+      doc.text("Status: " + reportData.status, 10, yPos + 26);
+      doc.save("RideAlong_Report_" + reportData.id + ".pdf");
     }
+
+    // Populate Dashboard with reports
+    function populateDashboard() {
+      const tbody = document.querySelector('#reportsTable tbody');
+      tbody.innerHTML = '';
+      const reports = getReports();
+      reports.forEach(report => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${report.id}</td>
+          <td>${report.submittedBy}</td>
+          <td>${new Date(report.submissionDate).toLocaleDateString()}</td>
+          <td>${report.status}</td>
+          <td>
+            <button class="btn btn-sm btn-primary" onclick="editReport('${report.id}')">Edit</button>
+            <button class="btn btn-sm btn-warning" onclick="markReviewed('${report.id}')">Mark as Reviewed</button>
+            <button class="btn btn-sm btn-danger" onclick="confirmDelete('${report.id}')">Delete</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // Edit a report (Managers/Trainers)
+    window.editReport = function(reportId) {
+      const reports = getReports();
+      const report = reports.find(rep => rep.id === reportId);
+      if (report) {
+        for (const key in report) {
+          if (report.hasOwnProperty(key)) {
+            const el = document.querySelector(`[name="${key}"]`);
+            if (el) { el.value = report[key]; }
+          }
+        }
+        document.getElementById('reportId').value = report.id;
+        editingReport = true;
+        showContainer('appDiv');
+        clearInterval(autoSaveInterval);
+        startAutoSave();
+      }
+    };
+
+    // Mark report as Reviewed (Managers/Trainers)
+    window.markReviewed = function(reportId) {
+      let reports = getReports();
+      reports = reports.map(rep => {
+        if (rep.id === reportId) { rep.status = "Reviewed"; }
+        return rep;
+      });
+      saveReports(reports);
+      populateDashboard();
+      showToast('Status Updated', 'Report marked as reviewed.');
+    };
+
+    // Confirm deletion (show modal)
+    window.confirmDelete = function(reportId) {
+      reportToDelete = reportId;
+      $('#confirmDeleteModal').modal('show');
+    };
+
+    // Delete report after confirmation
+    document.getElementById('deleteConfirmBtn').addEventListener('click', function() {
+      if (reportToDelete) {
+        let reports = getReports();
+        reports = reports.filter(rep => rep.id !== reportToDelete);
+        saveReports(reports);
+        populateDashboard();
+        $('#confirmDeleteModal').modal('hide');
+        showToast('Report Deleted', 'The report has been deleted.');
+        reportToDelete = null;
+      }
+    });
+
+    // CSV Export
+    document.getElementById('exportCSVBtn').addEventListener('click', function() {
+      const reports = getReports();
+      if (!reports.length) {
+        showToast('No Reports', 'No reports available for export.');
+        return;
+      }
+      let csvContent = "data:text/csv;charset=utf-8,";
+      const headers = Object.keys(reports[0]).join(",");
+      csvContent += headers + "\r\n";
+      reports.forEach(report => {
+        let row = Object.values(report).join(",");
+        csvContent += row + "\r\n";
+      });
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", "ride_along_reports.csv");
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    });
+
+    // Dashboard filtering
+    document.getElementById('applyFiltersBtn').addEventListener('click', function() {
+      const emailFilter = document.getElementById('filterEmail').value.trim().toLowerCase();
+      const dateFilter = document.getElementById('filterDate').value;
+      const tbody = document.querySelector('#reportsTable tbody');
+      tbody.innerHTML = '';
+      let reports = getReports();
+      if (emailFilter) {
+        reports = reports.filter(report => report.submittedBy.toLowerCase().includes(emailFilter));
+      }
+      if (dateFilter) {
+        reports = reports.filter(report => {
+          const reportDate = new Date(report.submissionDate).toISOString().split("T")[0];
+          return reportDate === dateFilter;
+        });
+      }
+      reports.forEach(report => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${report.id}</td>
+          <td>${report.submittedBy}</td>
+          <td>${new Date(report.submissionDate).toLocaleDateString()}</td>
+          <td>${report.status}</td>
+          <td>
+            <button class="btn btn-sm btn-primary" onclick="editReport('${report.id}')">Edit</button>
+            <button class="btn btn-sm btn-warning" onclick="markReviewed('${report.id}')">Mark as Reviewed</button>
+            <button class="btn btn-sm btn-danger" onclick="confirmDelete('${report.id}')">Delete</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    });
+    
+    document.getElementById('clearFiltersBtn').addEventListener('click', function() {
+      document.getElementById('filterEmail').value = "";
+      document.getElementById('filterDate').value = "";
+      populateDashboard();
+    });
   </script>
 </body>
 </html>
